@@ -10,35 +10,39 @@ n_steps_print = 100 # print training status frequency
 img_width = 28
 img_height = img_width
 num_pixels = img_width * img_height
+num_classes = 100 # how many kanji are in the set
 num_test = 256 # how many entries should be reserved for testing?
 batch_size = 50 # batch size for training step
 num_steps = 20000 # training steps
 keep_probability = 0.5 # dropout probability
 conv_filter_size = 5
 
-# load data from file
-input_file = np.load(data_file_location)
-dict_file = np.load(dict_file_location)
+def load_files():
+    # load data from file
+    input_file = np.load(data_file_location)
+    dict_file = np.load(dict_file_location)
+    
+    kanji_images = input_file["kanji_images"]
+    kanji_labels = input_file["kanji_labels"]
+    onehot_dict = dict_file["onehot_dict"].item()
+    
+    #print onehot_dict
+    num_classes = len(onehot_dict)
+    
+    # remove a random selection of the data to keep for testing
+    test_idx = np.random.choice(kanji_images.shape[0], num_test)
+    test_images = kanji_images[test_idx]
+    test_labels = kanji_labels[test_idx]
+    
+    kanji_images = np.delete(kanji_images, test_idx, axis=0)
+    kanji_labels = np.delete(kanji_labels, test_idx, axis=0)
 
-kanji_images = input_file["kanji_images"]
-kanji_labels = input_file["kanji_labels"]
-onehot_dict = dict_file["onehot_dict"].item()
-
-#print onehot_dict
-num_classes = len(onehot_dict)
-
-# remove a random selection of the data to keep for testing
-test_idx = np.random.choice(kanji_images.shape[0], num_test)
-test_images = kanji_images[test_idx]
-test_labels = kanji_labels[test_idx]
-
-kanji_images = np.delete(kanji_images, test_idx, axis=0)
-kanji_labels = np.delete(kanji_labels, test_idx, axis=0)
-
-def get_batch(b_size):
-    idx = np.random.choice(kanji_images.shape[0], b_size)
-    batch_xs = kanji_images[idx]
-    batch_ys = kanji_labels[idx]
+    return kanji_images, kanji_labels, test_images, test_labels, num_classes
+    
+def get_batch(b_size, _kanji_images, _kanji_labels):
+    idx = np.random.choice(_kanji_images.shape[0], b_size)
+    batch_xs = _kanji_images[idx]
+    batch_ys = _kanji_labels[idx]
     return batch_xs, batch_ys          
 
 def weight_variable(shape):
@@ -116,6 +120,7 @@ accuracy = tf.reduce_mean(tf.cast(prediction, tf.float32))
 init = tf.initialize_all_variables()
 
 def main(argv=None):
+    kanji_images, kanji_labels, test_images, test_labels, num_classes = load_files()
     
     with tf.Session() as sess:
         sess.run(init)
@@ -126,7 +131,7 @@ def main(argv=None):
         # start the training loop
         for i in range(num_steps):
             # fetch a random selection from the training data
-            batch_data, batch_labels = get_batch(batch_size)
+            batch_data, batch_labels = get_batch(batch_size, kanji_images, kanji_labels)
 
             # print every Nth step
             if (i % n_steps_print == 0):
