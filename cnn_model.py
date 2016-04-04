@@ -102,7 +102,6 @@ def model(_x, _W_conv1, _b_conv1, _keep_prob):
 cnn_model = model(x, W_conv1, b_conv1, keep_prob)
 
 # clip the value to avoid NaN
-#cross_entropy = -tf.reduce_sum(y_*tf.log(y_conv))
 cross_entropy = -tf.reduce_sum(y_ * tf.log(tf.clip_by_value(cnn_model, 1E-12, 1.0)) ) 
 
 # use stochastic gradient descent
