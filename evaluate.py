@@ -33,7 +33,7 @@ def get_unicode_labels(filename):
 
 # load data from file
 kanji_images = convert_data.convert_image(sys.argv[1], img_width, img_height)
-print kanji_images
+#print kanji_images
 
 # load the dict file
 dict_file = np.load(dict_file_location)
