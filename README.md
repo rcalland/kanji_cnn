@@ -3,6 +3,9 @@ Recognize a set of 100 kanji from handwritten images. The model definition is in
 
 #### If you intend to train the model
 Please download and unzip this file into the root directory: https://drive.google.com/file/d/0B69xlFeuS9FJN3lycXlfNGFmdWM/view
+
+First you must convert this set of .png files into a preformatted numpy array. This is done with ```python convert_data.py```. This process is a little slow and could be improved. This will also create the labels, and a dictionary allowing us to convert the one-hot vector back to the original kanji label. Make sure to set the location of the unzipped image files in convert_data.py, along with setting the desired image resolution.
+
 To train the model, make any necessary edits to cnn_model.py, then simply run ```python cnn_model.py```
 
 #### To test the model
