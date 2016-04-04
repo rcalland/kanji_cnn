@@ -1,8 +1,9 @@
 import numpy as np
 import tensorflow as tf
 
-data_file_location = "/home/rcalland/reactive/kanji_data_28x28.npz" # train on this data
-model_save_location = "/home/rcalland/reactive/test.ckpt" # save the trained model to this file
+data_file_location = "kanji_data_28x28.npz" # train on this data
+dict_file_location = "label_dictionary.npz" # where is the label dictionary?
+model_save_location = "kanji_cnn_model.ckpt" # save the trained model to this file
 n_steps_print = 100 # print training status frequency
 
 # parameters
@@ -15,14 +16,13 @@ num_steps = 20000 # training steps
 keep_probability = 0.5 # dropout probability
 conv_filter_size = 5
 
-#sess = tf.InteractiveSession()
-
 # load data from file
 input_file = np.load(data_file_location)
+dict_file = np.load(dict_file_location)
 
 kanji_images = input_file["kanji_images"]
 kanji_labels = input_file["kanji_labels"]
-onehot_dict = input_file["onehot_dict"].item()
+onehot_dict = dict_file["onehot_dict"].item()
 
 #print onehot_dict
 num_classes = len(onehot_dict)
@@ -109,9 +109,8 @@ cross_entropy = -tf.reduce_sum(y_ * tf.log(tf.clip_by_value(cnn_model, 1E-12, 1.
 
 # use stochastic gradient descent
 train_step = tf.train.AdamOptimizer(1e-4).minimize(cross_entropy)
-#correct_prediction = tf.equal(tf.argmax(y_conv,1), tf.argmax(y_,1))
-correct_prediction = tf.equal(tf.argmax(cnn_model,1), tf.argmax(y_,1))
-accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+prediction = tf.equal(tf.argmax(cnn_model,1), tf.argmax(y_,1))
+accuracy = tf.reduce_mean(tf.cast(prediction, tf.float32))
 
 # init everything
 init = tf.initialize_all_variables()
