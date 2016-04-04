@@ -51,7 +51,7 @@ cnnmodel = cnn_model.cnn_model
 # set up loading
 saver = tf.train.Saver()
 
-char = 0 # int(sys.argv[1])
+char = 0
 
 # reshape array to be able to feed it in
 kanji_images = np.reshape(kanji_images, [-1, num_pixels])

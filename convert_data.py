@@ -8,7 +8,7 @@ from PIL import ImageOps
 from PIL import Image
 
 # where is the data kept? This could be an argument
-data_dir = "handwriting_chinese_100_classes"
+data_dir = "/home/rcalland/reactive/handwriting_chinese_100_classes"
 
 # parameters
 img_width = 28
@@ -16,6 +16,7 @@ img_height = img_width
 num_pixels = img_width * img_height
 
 def process_args():
+    global img_width
     # handle the arguments
     if (len(sys.argv) is 1):
         print "Using default image size: " + str(img_width) + "px"
@@ -130,5 +131,6 @@ def main(argv=None):
     np.savez("label_dictionary", onehot_dict=onehot_dict)
     
     #done!
-
+if __name__ == "__main__":
+    main()
     

@@ -60,15 +60,10 @@ def max_pool_2x2(x):
     return tf.nn.max_pool(x, ksize=[1, 2, 2, 1],
                         strides=[1, 2, 2, 1], padding='SAME')
 
-#def train_step():   
-
 # placeholders
 x = tf.placeholder(tf.float32, shape=[None, num_pixels])
 y_ = tf.placeholder(tf.float32, shape=[None, num_classes])
 keep_prob = tf.placeholder(tf.float32)
-# are these needed now?
-#W = tf.Variable(tf.zeros([num_pixels, num_classes]))
-#b = tf.Variable(tf.zeros([num_classes]))
 
 # build the network
 W_conv1 = weight_variable([conv_filter_size, conv_filter_size, 1, 32])
@@ -108,7 +103,6 @@ cnn_model = model(x, W_conv1, b_conv1, keep_prob)
 
 # clip the value to avoid NaN
 #cross_entropy = -tf.reduce_sum(y_*tf.log(y_conv))
-#cross_entropy = -tf.reduce_sum(y_ * tf.log(tf.clip_by_value(y_conv, 1E-12, 1.0)) )
 cross_entropy = -tf.reduce_sum(y_ * tf.log(tf.clip_by_value(cnn_model, 1E-12, 1.0)) ) 
 
 # use stochastic gradient descent
@@ -135,7 +129,7 @@ def main(argv=None):
 
             # print every Nth step
             if (i % n_steps_print == 0):
-                train_accuracy = accuracy.eval(feed_dict={x: batch_data, y_: batch_labels, keep_prob: 1.0}) # do this with sess.run()
+                train_accuracy = sess.run(accuracy, feed_dict={x: batch_data, y_: batch_labels, keep_prob: 1.0})
                 loss = sess.run(cross_entropy, feed_dict={x: batch_data, y_: batch_labels, keep_prob: 1.0})
                 print "[" + str(i) + "/" + str(num_steps) + "] - loss for current batch: " + "{:.4f}".format(loss) + ", accuracy: " + "{:.4f}".format(train_accuracy)
 
