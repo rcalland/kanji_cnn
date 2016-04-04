@@ -8,7 +8,7 @@ from PIL import ImageOps
 from PIL import Image
 
 # where is the data kept? This could be an argument
-data_dir = "/home/rcalland/reactive/handwriting_chinese_100_classes"
+data_dir = "handwriting_chinese_100_classes"
 
 # parameters
 img_width = 28
