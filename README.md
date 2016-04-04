@@ -10,7 +10,7 @@ To train the model, make any necessary edits to cnn_model.py, then simply run ``
 
 #### To test the model
 The repo contains a pre-trained model, so you can try it out by doing
-```python evaluate.py /path/to/image.png```
+```python evaluate.py image1.png image2.png ... imageN.png```
 
-It will automatically resize the image to whatever the image size is defined as inside cnn_model.py. It will also plot the image by default, you can change that by setting "plot_image" to False.
+It will automatically resize the image to whatever the image size is defined as inside cnn_model.py. **It will also plot the image by default, you can change that by setting ```plot_image = False``` inside evaluate.py**
 
