@@ -8,13 +8,19 @@ import sys
 import cnn_model
 import convert_data
 
-if (len(sys.argv) is not 2):
-    print "Usage: \"python " + str(sys.argv[0]) + " image.png\""
+if (len(sys.argv) is 1):
+    print "Usage: \"python " + str(sys.argv[0]) + " image1.png image2.png ... imageN.png \""
     quit()
 
 # do you want the input image to be plotted too?
 plot_image = True
-    
+
+# file list from arguments
+file_list = sys.argv[1:]
+
+print file_list
+
+#quit()
 # the model definition is loaded from cnn_model.py
 dict_file_location = cnn_model.dict_file_location
 model_save_location = cnn_model.model_save_location
@@ -32,8 +38,12 @@ def get_unicode_labels(filename):
     return mydict
 
 # load data from file
-kanji_images = convert_data.convert_image(sys.argv[1], img_width, img_height)
-#print kanji_images
+imgs = []
+for f in file_list:
+    _images = convert_data.convert_image(f, img_width, img_height)
+    imgs.append(_images)
+
+kanji_images = np.concatenate(imgs, axis=0)
 
 # load the dict file
 dict_file = np.load(dict_file_location)
@@ -62,16 +72,20 @@ with tf.Session() as sess:
     # Load trained model from file
     saver.restore(sess, model_save_location)
 
-    # get the most likely label for input 
-    predicted = sess.run(tf.argmax(cnnmodel, 1), feed_dict={cnn_model.x: [kanji_images[char]], cnn_model.keep_prob: 1.0})
-    print "- Most likely character is: " + label_dict[onehot_dict.keys()[predicted]].decode('utf-8')
+    # loop over inputs
+    for i in range(kanji_images.shape[0]):
+    
+        # get the most likely label for input 
+        predicted = sess.run(tf.argmax(cnnmodel, 1), feed_dict={cnn_model.x: [kanji_images[char]], cnn_model.keep_prob: 1.0})
+        print "- Most likely character for " + str(sys.argv[i+1]) + " is: " + label_dict[onehot_dict.keys()[predicted]].decode('utf-8')
 
-    if (plot_image is True):
-        # lets plot the image!
-        newimg = np.matrix(kanji_images[char])
-
-        # reform a numpy array of the original shape
-        arr2 = np.asarray(newimg).reshape((img_width,img_height))
-        fig, ax = plt.subplots()
-        ax.imshow(arr2,cmap=cm.Greys, interpolation='nearest')
-        plt.show()  
+        if (plot_image is True):
+            # lets plot the image!
+            newimg = np.matrix(kanji_images[char])
+            
+            # reform a numpy array of the original shape
+            arr2 = np.asarray(newimg).reshape((img_width,img_height))
+            fig, ax = plt.subplots()
+            ax.imshow(arr2,cmap=cm.Greys, interpolation='nearest')
+            print "Close image window to continue..."
+            plt.show()
