@@ -1,10 +1,9 @@
 # Handwritten Kanji Recognition with a CNN
-
-Recognize a set of 100 kanji from handwritten images. The model definition is inside cnn_model.py, the other programs read from here, so make your edits here only!
+Recognize a set of 100 kanji from handwritten images. The model definition is inside cnn_model.py, the other programs read from this file, so make your edits there only!
 
 #### If you intend to train the model
 Please download and unzip this file into the root directory: https://drive.google.com/file/d/0B69xlFeuS9FJN3lycXlfNGFmdWM/view
-To train the model, make any necessary edits to cnn_model.py, then simply run python cnn_model.py
+To train the model, make any necessary edits to cnn_model.py, then simply run ```python cnn_model.py```
 
 #### To test the model
 The repo contains a pre-trained model, so you can try it out by doing
